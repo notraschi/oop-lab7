@@ -1,5 +1,6 @@
 package it.unibo.nestedenum;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public final class MonthSorterNested implements MonthSorter {
         private final String name;
         private final int days;
 
-        private Month(String name, int days) {
+        private Month(final String name, final int days) {
             this.name = name;
             this.days = days;
         }
@@ -37,16 +38,18 @@ public final class MonthSorterNested implements MonthSorter {
             return this.name;
         }
 
-        private static Month fromString(final String name) {
-            List<Month> candidates = List.of(
-                JANUARY, FEBRUARY, MARCH, 
-                APRIL, MAY, JUNE, JULY, AUGUST, 
-                SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER);
+        private int getDays() {
+            return this.days;
+        }
 
+        private static Month fromString(final String name) {
             // i dont think we can use lamdas yet...
-            candidates = Transformers.select(candidates, new Function<Month, Boolean>() {
+            List<Month> candidates = Transformers.select(
+                Arrays.asList(Month.values()), 
+                new Function<Month, Boolean>() 
+            {
                 @Override
-                public Boolean call(Month input) {
+                public Boolean call(final Month input) {
                     return input.getName().startsWith(name.toLowerCase());
                 }
             });
@@ -60,13 +63,31 @@ public final class MonthSorterNested implements MonthSorter {
 
     @Override
     public Comparator<String> sortByDays() {
-        return null;
+        return new SortByDate();
     }
 
     @Override
     public Comparator<String> sortByOrder() {
-        return null;
+        return new SortByMonthOrder();
     }
 
+    private static class SortByMonthOrder implements Comparator<String> {
+        @Override
+        public int compare(final String t, final String t1) {
+            return Integer.compareUnsigned(
+                Month.fromString(t).ordinal(),
+                Month.fromString(t1).ordinal() 
+            );
+        }
+    }
 
+    private static class SortByDate implements Comparator<String> {
+        @Override
+        public int compare(final String t, final String t1) {
+            return Integer.compareUnsigned(
+                Month.fromString(t).getDays(),
+                Month.fromString(t1).getDays()
+            );
+        }
+    }
 }
