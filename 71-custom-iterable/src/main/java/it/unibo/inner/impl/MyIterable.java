@@ -12,21 +12,30 @@ import it.unibo.inner.api.Predicate;
 public class MyIterable<T> implements IterableWithPolicy<T> {
 
     private List<T> data;
+    private Predicate<T> pred;
 
     @SuppressWarnings("unused")
     private MyIterable() {}
 
-    public MyIterable(List<T> elems) {
-        data = new LinkedList<>(elems);
+    public MyIterable(T[] elems) {
+        // can i use lamdas yet?
+        // this(elems, T -> true);
+        this(elems, new Predicate<T>(){
+            @Override
+            public boolean test(T elem) {
+                return true;
+            }
+        });
     }
 
-    public MyIterable(T[] elems) {
+    public MyIterable(T[] elems, Predicate<T> predicate) {
         data = new LinkedList<>(Arrays.asList(elems));
+        pred = predicate;
     }
 
     @Override
     public void setIterationPolicy(Predicate<T> filter) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        pred = filter;
     }
 
     @Override
@@ -42,8 +51,15 @@ public class MyIterable<T> implements IterableWithPolicy<T> {
          */
         private int pointer = 0;
 
+        private void advancePointer() {
+            while (pointer < data.size() && !pred.test(data.get(pointer))) {
+                pointer++;
+            }
+        }
+
         @Override
         public boolean hasNext() {
+            this.advancePointer();
             return this.pointer < data.size();
         }
 
@@ -52,7 +68,7 @@ public class MyIterable<T> implements IterableWithPolicy<T> {
             if (!this.hasNext()) {
                 throw new NoSuchElementException();
             }
-            return data.get(pointer++);
+            return data.get(pointer++);            
         }
     }   
 }

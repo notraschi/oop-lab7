@@ -8,6 +8,7 @@ import it.unibo.inner.test.impl.ProductImpl;
 import java.util.Arrays;
 import java.util.List;
 
+import it.unibo.inner.impl.MyIterable;
 import static it.unibo.inner.test.Assertions.assertContentEqualsInOrder;
 
 public class TestIterableWithPolicy {
@@ -15,11 +16,11 @@ public class TestIterableWithPolicy {
     private TestIterableWithPolicy() {}
 
     private static <T> IterableWithPolicy<T> makeIterableWithPolicy(final T[] elements, final Predicate<T> filter) {
-        return null; // TODO: return the implementation of IterableWithPolicy
+        return new MyIterable<>(elements, filter);
     }
 
     private static <T> IterableWithPolicy<T> makeIterableWithPolicy(final T[] elements) {
-        return null; // TODO: return the implementation of IterableWithPolicy
+        return new MyIterable<>(elements);
     }
 
     public static void main(final String[] args) {
