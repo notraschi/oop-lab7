@@ -1,8 +1,10 @@
 package it.unibo.inner.impl;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import it.unibo.inner.api.IterableWithPolicy;
 import it.unibo.inner.api.Predicate;
@@ -18,6 +20,10 @@ public class MyIterable<T> implements IterableWithPolicy<T> {
         data = new LinkedList<>(elems);
     }
 
+    public MyIterable(T[] elems) {
+        data = new LinkedList<>(Arrays.asList(elems));
+    }
+
     @Override
     public void setIterationPolicy(Predicate<T> filter) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -25,20 +31,28 @@ public class MyIterable<T> implements IterableWithPolicy<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new InnerIterator<>();
+        return new InnerIterator();
     }
 
     @SuppressWarnings("unused")
-    private class InnerIterator<T> implements Iterator<T> {
+    private class InnerIterator implements Iterator<T> {
+
+        /**
+         * points to the element that will be returned by next()
+         */
+        private int pointer = 0;
 
         @Override
         public boolean hasNext() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return this.pointer < data.size();
         }
 
         @Override
         public T next() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return data.get(pointer++);
         }
     }   
 }
