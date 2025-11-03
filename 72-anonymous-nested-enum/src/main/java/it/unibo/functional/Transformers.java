@@ -56,7 +56,7 @@ public final class Transformers {
     public static <I, O> List<O> transform(final Iterable<I> base, final Function<I, O> transformer) {
         return flattenTransform(base, new Function<I, List<O>>() {
             @Override
-            public List<O> call(I input) {
+            public List<O> call(final I input) {
                 return List.of(transformer.call(input));
             }
         });
@@ -94,7 +94,7 @@ public final class Transformers {
     public static <I> List<I> select(final Iterable<I> base, final Function<I, Boolean> test) {
         return flattenTransform(base, new Function<I, List<I>>() {
             @Override
-            public List<I> call(I input) {
+            public List<I> call(final I input) {
                 if (test.call(input)) {
                     return List.of(input);
                 } else {
@@ -119,7 +119,7 @@ public final class Transformers {
     public static <I> List<I> reject(final Iterable<I> base, final Function<I, Boolean> test) {
         return select(base, new Function<I, Boolean>() {
             @Override
-            public Boolean call(I input) {
+            public Boolean call(final I input) {
                 return !test.call(input);
             }
         });
