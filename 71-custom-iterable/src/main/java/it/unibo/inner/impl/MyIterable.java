@@ -1,6 +1,7 @@
 package it.unibo.inner.impl;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import it.unibo.inner.api.IterableWithPolicy;
@@ -8,12 +9,13 @@ import it.unibo.inner.api.Predicate;
 
 public class MyIterable<T> implements IterableWithPolicy<T> {
 
-    public MyIterable(T... elems) {
+    private List<T> data;
 
-    }
+    @SuppressWarnings("unused")
+    private MyIterable() {}
 
     public MyIterable(List<T> elems) {
-        
+        data = new LinkedList<>(elems);
     }
 
     @Override
@@ -23,6 +25,20 @@ public class MyIterable<T> implements IterableWithPolicy<T> {
 
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new InnerIterator<>();
+    }
+
+    @SuppressWarnings("unused")
+    private class InnerIterator<T> implements Iterator<T> {
+
+        @Override
+        public boolean hasNext() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public T next() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }   
 }
