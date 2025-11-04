@@ -1,9 +1,13 @@
 package it.unibo.bank.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import it.unibo.bank.api.AccountHolder;
 import it.unibo.bank.api.BankAccount;
@@ -14,8 +18,9 @@ import it.unibo.bank.api.BankAccount;
 class TestStrictBankAccount {
 
     private static final double AMOUNT = 100.0; 
+    private static final double NEGATIVE_AMOUNT = -100.0; 
     private static final double EXPECTED_TRANSACTION_FEE = 0.1;
-    private static final double EXPECTED_MANAGEMENT_FEE  = 5.0;
+    private static final double EXPECTED_MANAGEMENT_FEE = 5.0;
 
     // Create a new AccountHolder and a StrictBankAccount for it each time tests are executed.
     private AccountHolder mRossi;
@@ -58,13 +63,16 @@ class TestStrictBankAccount {
      */
     @Test
     public void testNegativeWithdraw() {
-        try {
-            bankAccount.withdraw(mRossi.getUserID(), -1);
-            fail("withdrawing a negative amout of money shouldn't have been possible");
-        } catch (final IllegalArgumentException e) {
-            assertEquals(0, bankAccount.getBalance());
-            assertEquals(0, bankAccount.getTransactionsCount());
-        }
+        final var exception = assertThrows(IllegalArgumentException.class, new Executable() {
+            @Override
+            public void execute() throws Throwable {
+                bankAccount.withdraw(mRossi.getUserID(), NEGATIVE_AMOUNT);
+                fail("withdrawing a negative amout of money shouldn't have been possible");
+            }
+        });
+        assertNotNull(exception.getMessage());
+        assertEquals(0, bankAccount.getBalance());
+        assertEquals(0, bankAccount.getTransactionsCount());
     }
 
     /**
