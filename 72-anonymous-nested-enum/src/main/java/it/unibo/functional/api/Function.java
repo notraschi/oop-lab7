@@ -6,7 +6,6 @@ package it.unibo.functional.api;
  * @param <I> the input type
  * @param <O> the output type
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
 public interface Function<I, O> {
 
     /**
@@ -26,7 +25,7 @@ public interface Function<I, O> {
     static <T> Function<T, T> identity() {
         return new Function<T, T>() {
             @Override
-            public T call(T input) {
+            public T call(final T input) {
                 return input;
             }
         };

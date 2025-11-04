@@ -44,16 +44,15 @@ public final class MonthSorterNested implements MonthSorter {
 
         private static Month fromString(final String name) {
             // i dont think we can use lamdas yet...
-            List<Month> candidates = Transformers.select(
-                Arrays.asList(Month.values()), 
-                new Function<Month, Boolean>() 
-            {
-                @Override
-                public Boolean call(final Month input) {
-                    return input.getName().startsWith(name.toLowerCase());
+            final List<Month> candidates = Transformers.select(
+                Arrays.asList(Month.values()),
+                new Function<Month, Boolean>() {
+                    @Override
+                    public Boolean call(final Month input) {
+                        return input.getName().startsWith(name.toLowerCase());
+                    }
                 }
-            });
-
+            );
             if (candidates.size() != 1) {
                 throw new IllegalArgumentException("Supplied name cannot be mapped to a unique valid month");
             } 
@@ -74,7 +73,7 @@ public final class MonthSorterNested implements MonthSorter {
     private static class SortByMonthOrder implements Comparator<String> {
         @Override
         public int compare(final String t, final String t1) {
-            return Integer.compareUnsigned(
+            return Integer.compare(
                 Month.fromString(t).ordinal(),
                 Month.fromString(t1).ordinal() 
             );
@@ -84,7 +83,7 @@ public final class MonthSorterNested implements MonthSorter {
     private static class SortByDate implements Comparator<String> {
         @Override
         public int compare(final String t, final String t1) {
-            return Integer.compareUnsigned(
+            return Integer.compare(
                 Month.fromString(t).getDays(),
                 Month.fromString(t1).getDays()
             );
