@@ -3,6 +3,7 @@ package it.unibo.nestedenum;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import it.unibo.functional.Transformers;
 import it.unibo.functional.api.Function;
@@ -29,7 +30,7 @@ public final class MonthSorterNested implements MonthSorter {
         private final String name;
         private final int days;
 
-        private Month(final String name, final int days) {
+        Month(final String name, final int days) {
             this.name = name;
             this.days = days;
         }
@@ -45,11 +46,13 @@ public final class MonthSorterNested implements MonthSorter {
         private static Month fromString(final String name) {
             // i dont think we can use lamdas yet...
             final List<Month> candidates = Transformers.select(
-                Arrays.asList(Month.values()),
-                new Function<Month, Boolean>() {
+                Arrays.asList(values()),
+                new Function<>() {
                     @Override
                     public Boolean call(final Month input) {
-                        return input.getName().startsWith(name.toLowerCase());
+                        // added a locale because this way conversion is consistent,
+                        // also Gradle was yelling at me
+                        return input.getName().startsWith(name.toLowerCase(Locale.ENGLISH));
                     }
                 }
             );
@@ -70,7 +73,8 @@ public final class MonthSorterNested implements MonthSorter {
         return new SortByMonthOrder();
     }
 
-    private static class SortByMonthOrder implements Comparator<String> {
+    // Gradle is mad these two dont implement Serializable as well, but it's not needed for this application
+    private static final class SortByMonthOrder implements Comparator<String> {
         @Override
         public int compare(final String t, final String t1) {
             return Integer.compare(
@@ -80,7 +84,7 @@ public final class MonthSorterNested implements MonthSorter {
         }
     }
 
-    private static class SortByDate implements Comparator<String> {
+    private static final class SortByDate implements Comparator<String> {
         @Override
         public int compare(final String t, final String t1) {
             return Integer.compare(

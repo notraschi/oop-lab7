@@ -54,7 +54,7 @@ public final class Transformers {
      * @return A transformed list where each input element is replaced with the produced elements
      */
     public static <I, O> List<O> transform(final Iterable<I> base, final Function<I, O> transformer) {
-        return flattenTransform(base, new Function<I, List<O>>() {
+        return flattenTransform(base, new Function<>() {
             @Override
             public List<O> call(final I input) {
                 return List.of(transformer.call(input));
@@ -92,7 +92,7 @@ public final class Transformers {
      * @return A list containing only the elements that passed the test
      */
     public static <I> List<I> select(final Iterable<I> base, final Function<I, Boolean> test) {
-        return flattenTransform(base, new Function<I, List<I>>() {
+        return flattenTransform(base, new Function<>() {
             @Override
             public List<I> call(final I input) {
                 if (test.call(input)) {
@@ -117,7 +117,7 @@ public final class Transformers {
      * @return A list containing only the elements that passed the test
      */
     public static <I> List<I> reject(final Iterable<I> base, final Function<I, Boolean> test) {
-        return select(base, new Function<I, Boolean>() {
+        return select(base, new Function<>() {
             @Override
             public Boolean call(final I input) {
                 return !test.call(input);
